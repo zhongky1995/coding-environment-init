@@ -1,0 +1,4 @@
+interface:
+  display_name: "项目工作区初始化与持续维护"
+  short_description: "初始化或持续维护项目目标、有效设计和接手入口，保留决定依据与当前成果"
+  default_prompt: "使用 $coding-environment-init 初始化、接手或维护当前项目，复用已有目标、设计依据和成果，核对本轮任务与整体方向的关系，更新必要记录和入口，保留变化来源与未解决偏差。"
