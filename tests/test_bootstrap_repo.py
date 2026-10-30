@@ -4,6 +4,8 @@ import subprocess
 import sys
 import tempfile
 import unittest
+import re
+from urllib.parse import unquote, urlsplit
 
 SCRIPT = Path(__file__).resolve().parents[1] / "scripts/bootstrap_repo.py"
 CORE = {"docs/ai/current-task.md", "docs/ai/project-context.md", "docs/ai/architecture-guardrails.md"}
@@ -75,6 +77,25 @@ class BootstrapBehavior(unittest.TestCase):
         result = self.run_cli()
         self.assertIn("Mode: existing", result.stdout)
         self.assertFalse((self.root / "src").exists())
+
+
+class SkillPackageReferences(unittest.TestCase):
+    def test_published_document_file_links_resolve(self):
+        """Check inline local file links; template destinations exist downstream."""
+        root = SCRIPT.parents[1]
+        missing = []
+        for doc in root.rglob("*.md"):
+            if any(part in {".git", "assets"} for part in doc.relative_to(root).parts):
+                continue
+            text = re.sub(r"```.*?```", "", doc.read_text(), flags=re.S)
+            for target in re.findall(r"\]\(([^)]+)\)", text):
+                target = urlsplit(target)
+                if target.scheme or target.netloc or not target.path:
+                    continue
+                path = (doc.parent / unquote(target.path)).resolve()
+                if not path.exists():
+                    missing.append(f"{doc.relative_to(root)} -> {target.path}")
+        self.assertEqual([], missing, "Broken local file links: " + "; ".join(missing))
 
 
 if __name__ == "__main__":

@@ -81,7 +81,7 @@ python3 scripts/bootstrap_repo.py /path/to/project --preset guided
 python3 -m unittest discover -s tests
 ```
 
-测试检查生成器行为，包括默认文件数量、模板替换、保留已有内容和绿地目录保护；不代表整体方向判断能力已经通过验证。GitHub Actions 会运行测试与 Python 语法检查。
+测试检查生成器行为，包括默认文件数量、模板替换、保留已有内容和绿地目录保护，并检查技能说明中的本地文件引用（不检查生成模板的目标或章节锚点）。这些检查适用于本技能包，不是给所有项目注入的通用门禁，也不代表整体方向判断能力已经通过验证。GitHub Actions 会运行测试与 Python 语法检查。
 
 ## 许可证
 
